@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CogniConnect - Family Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .consciousness-display {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .consciousness-score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .consciousness-level {
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .level-unresponsive {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .level-minimal_signs {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .level-covert_awareness {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .level-conscious_signs {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .family-message {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+        }
+
+        .indicators {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .indicator {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .indicator.inactive {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .indicator-icon {
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+        }
+
+        .eeg-visualization {
+            height: 300px;
+            background: #2d3436;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eeg-waves {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .wave-channel {
+            height: 50px;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .wave-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #74b9ff, #0984e3, #74b9ff);
+            animation: wave 2s infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateY(-50%) scaleX(1); }
+            50% { transform: translateY(-50%) scaleX(1.2); }
+            100% { transform: translateY(-50%) scaleX(1); }
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        .recommendations h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .recommendation-list {
+            list-style: none;
+        }
+
+        .recommendation-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .recommendation-list li::before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #fd79a8, #fdcb6e);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-connected {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+        }
+
+        .status-disconnected {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .consciousness-score {
+                font-size: 3rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-indicator status-connected" id="connectionStatus">
+        <div class="pulse"></div>
+        <span>Connected to Patient Monitor</span>
+    </div>
+
+    <header class="header">
+        <h1>🧠 CogniConnect</h1>
+        <p>Real-time consciousness monitoring and family communication bridge</p>
+    </header>
+
+    <div class="main-container">
+        <!-- Consciousness Level Display -->
+        <div class="card">
+            <div class="consciousness-display">
+                <h2>Current Consciousness Level</h2>
+                <div class="consciousness-score" id="consciousnessScore">67%</div>
+                <div class="consciousness-level level-covert_awareness" id="consciousnessLevel">
+                    Covert Awareness
+                </div>
+                <div class="family-message" id="familyMessage">
+                    Strong signs of awareness detected! They may understand more than they can show.
+                </div>
+            </div>
+
+            <div class="indicators">
+                <div class="indicator active">
+                    <span class="indicator-icon">👁️</span>
+                    <span>Awareness</span>
+                </div>
+                <div class="indicator active">
+                    <span class="indicator-icon">❤️</span>
+                    <span>Recognition</span>
+                </div>
+                <div class="indicator active">
+                    <span class="indicator-icon">🧠</span>
+                    <span>Cognition</span>
+                </div>
+                <div class="indicator inactive">
+                    <span class="indicator-icon">💬</span>
+                    <span>Communication</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="startFamilyInteraction()">
+                    Start Talking
+                </button>
+                <button class="btn btn-secondary" onclick="playFamiliarMusic()">
+                    Play Music
+                </button>
+            </div>
+        </div>
+
+        <!-- Real-time EEG Visualization -->
+        <div class="card">
+            <h3>Live Brain Activity</h3>
+            <div class="eeg-visualization" id="eegVisualization">
+                <div class="eeg-waves">
+                    <div class="wave-channel">
+                        <div class="wave-line" style="animation-delay: 0s;"></div>
+                        <small style="color: #74b9ff; position: absolute; top: 5px;">Frontal</small>
+                    </div>
+                    <div class="wave-channel">
+                        <div class="wave-line" style="animation-delay: 0.3s;"></div>
+                        <small style="color: #74b9ff; position: absolute; top: 5px;">Temporal</small>
+                    </div>
+                    <div class="wave-channel">
+                        <div class="wave-line" style="animation-delay: 0.6s;"></div>
+                        <small style="color: #74b9ff; position: absolute; top: 5px;">Parietal</small>
+                    </div>
+                    <div class="wave-channel">
+                        <div class="wave-line" style="animation-delay: 0.9s;"></div>
+                        <small style="color: #74b9ff; position: absolute; top: 5px;">Occipital</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Family Interaction Guide -->
+        <div class="card full-width">
+            <h3>🎯 Recommended Interactions</h3>
+            <div class="recommendations">
+                <h3>What to try now:</h3>
+                <ul class="recommendation-list" id="recommendationsList">
+                    <li>Ask specific questions about their favorite memories</li>
+                    <li>Try simple yes/no questions</li>
+                    <li>Increase your interaction time to 15-20 minutes</li>
+                    <li>Share updates about family and friends</li>
+                </ul>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                <div class="card" style="margin: 0;">
+                    <h4>🎵 Optimal Interaction Times</h4>
+                    <p style="color: #27ae60; font-weight: 600; font-size: 1.1rem;">
+                        Brain is most responsive: 2:00 PM - 4:00 PM
+                    </p>
+                    <p style="margin-top: 1rem; color: #7f8c8d;">
+                        Alpha wave activity peaks during these hours, suggesting higher awareness levels.
+                    </p>
+                </div>
+
+                <div class="card" style="margin: 0;">
+                    <h4>📈 Progress This Week</h4>
+                    <p style="color: #3498db; font-weight: 600; font-size: 1.1rem;">
+                        Recognition responses: +23%
+                    </p>
+                    <p style="margin-top: 1rem; color: #7f8c8d;">
+                        Significant improvement in temporal lobe activity when family speaks.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Initialize WebSocket connection for real-time updates
+        const socket = io();
+        
+        // Dashboard state
+        let isMonitoring = false;
+        let currentConsciousnessData = null;
+        
+        // Connect to consciousness detection service
+        socket.on('connect', function() {
+            console.log('Connected to CogniConnect server');
+            updateConnectionStatus(true);
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected from server');
+            updateConnectionStatus(false);
+        });
+
+        // Receive real-time consciousness updates
+        socket.on('consciousness_update', function(data) {
+            updateDashboard(data);
+        });
+
+        // Receive family interaction feedback
+        socket.on('family_interaction_detected', function(data) {
+            showFamilyInteractionFeedback(data);
+        });
+
+        function updateDashboard(consciousnessData) {
+            currentConsciousnessData = consciousnessData;
+            
+            // Update consciousness score
+            document.getElementById('consciousnessScore').textContent = consciousnessData.consciousnessScore + '%';
+            
+            // Update consciousness level
+            const levelElement = document.getElementById('consciousnessLevel');
+            levelElement.textContent = consciousnessData.level.replace('_', ' ').toUpperCase();
+            levelElement.className = 'consciousness-level level-' + consciousnessData.level;
+            
+            // Update family message
+            document.getElementById('familyMessage').textContent = consciousnessData.familyMessage;
+            
+            // Update indicators
+            updateIndicators(consciousnessData.indicators);
+            
+            // Update recommendations
+            updateRecommendations(consciousnessData.recommendedActions);
+            
+            // Animate score change
+            animateScoreChange();
+        }
+
+        function updateIndicators(indicators) {
+            const indicatorElements = document.querySelectorAll('.indicator');
+            const indicatorKeys = ['awareness', 'recognition', 'cognition', 'communication'];
+            
+            indicatorElements.forEach((element, index) => {
+                const key = indicatorKeys[index];
+                if (indicators[key]) {
+                    element.classList.remove('inactive');
+                    element.classList.add('active');
+                } else {
+                    element.classList.remove('active');
+                    element.classList.add('inactive');
+                }
+            });
+        }
+
+        function updateRecommendations(actions) {
+            const listElement = document.getElementById('recommendationsList');
+            listElement.innerHTML = '';
+            
+            actions.forEach(action => {
+                const li = document.createElement('li');
+                li.textContent = action;
+                listElement.appendChild(li);
+            });
+        }
+
+        function animateScoreChange() {
+            const scoreElement = document.getElementById('consciousnessScore');
+            scoreElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                scoreElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connected) {
+                statusElement.classList.remove('status-disconnected');
+                statusElement.classList.add('status-connected');
+                statusElement.innerHTML = '<div class="pulse"></div><span>Connected to Patient Monitor</span>';
+            } else {
+                statusElement.classList.remove('status-connected');
+                statusElement.classList.add('status-disconnected');
+                statusElement.innerHTML = '<div class="pulse"></div><span>Connection Lost</span>';
+            }
+        }
+
+        function startFamilyInteraction() {
+            // Notify server that family interaction is starting
+            socket.emit('start_family_interaction');
+            
+            // Update UI to show interaction mode
+            const button = event.target;
+            button.textContent = 'Listening...';
+            button.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+            
+            // Reset button after 30 seconds
+            setTimeout(() => {
+                button.textContent = 'Start Talking';
+                button.style.background = 'linear-gradient(135deg, #6c5ce7, #a29bfe)';
+            }, 30000);
+            
+            // Show interaction guidance
+            showInteractionGuidance();
+        }
+
+        function playFamiliarMusic() {
+            socket.emit('play_familiar_music');
+            
+            const button = event.target;
+            button.textContent = 'Music Playing...';
+            button.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+            
+            setTimeout(() => {
+                button.textContent = 'Play Music';
+                button.style.background = 'linear-gradient(135deg, #fd79a8, #fdcb6e)';
+            }, 15000);
+        }
+
+        function showInteractionGuidance() {
+            // Create and show interaction guidance popup
+            const guidance = document.createElement('div');
+            guidance.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #74b9ff, #0984e3);
+                color: white;
+                padding: 2rem;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                z-index: 1000;
+                max-width: 400px;
+                text-align: center;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            guidance.innerHTML = `
+                <h3 style="margin-bottom: 1rem;">💬 Interaction Tips</h3>
+                <p style="margin-bottom: 1rem; line-height: 1.6;">
+                    Speak clearly and directly. Share specific memories, ask yes/no questions, 
+                    and watch for the real-time brain activity changes on your dashboard.
+                </p>
+                <button onclick="this.parentElement.remove()" 
+                        style="background: white; color: #0984e3; border: none; padding: 0.5rem 1rem; 
+                               border-radius: 25px; cursor: pointer; font-weight: 600;">
+                    Got it!
+                </button>
+            `;
+            
+            document.body.appendChild(guidance);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (guidance.parentElement) {
+                    guidance.remove();
+                }
+            }, 10000);
+        }
+
+        function showFamilyInteractionFeedback(data) {
+            // Show real-time feedback during family interaction
+            if (data.recognition > 0.5) {
+                showNotification('🎉 Recognition detected! They may know your voice.', 'success');
+            }
+            if (data.emotional > 0.6) {
+                showNotification('❤️ Emotional response detected! Keep talking.', 'success');
+            }
+            if (data.memory > 0.4) {
+                showNotification('🧠 Memory activation seen! Continue with that topic.', 'info');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #00b894, #00cec9)' : 
+                           type === 'info' ? 'linear-gradient(135deg, #74b9ff, #0984e3)' : 
+                           'linear-gradient(135deg, #fd79a8, #e84393)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 25px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                z-index: 1001;
+                animation: slideInRight 0.3s ease-out;
+                max-width: 300px;
+                font-weight: 500;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { opacity: 0; transform: translate(-50%, -60%); }
+                to { opacity: 1; transform: translate(-50%, -50%); }
+            }
+            
+            @keyframes slideInRight {
+                from { opacity: 0; transform: translateX(100%); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            
+            @keyframes slideOutRight {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(100%); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize dashboard with demo data
+        setTimeout(() => {
+            const demoData = {
+                consciousnessScore: 67,
+                level: 'covert_awareness',
+                familyMessage: 'Strong signs of awareness detected! They may understand more than they can show.',
+                indicators: {
+                    awareness: true,
+                    recognition: true,
+                    cognition: true,
+                    communication: false
+                },
+                recommendedActions: [
+                    'Ask specific questions about their favorite memories',
+                    'Try simple yes/no questions',
+                    'Increase your interaction time to 15-20 minutes',
+                    'Share updates about family and friends'
+                ]
+            };
+            updateDashboard(demoData);
+        }, 1000);
+
+        // Simulate real-time updates every 5 seconds
+        setInterval(() => {
+            if (currentConsciousnessData) {
+                // Simulate slight variations in consciousness score
+                const variation = (Math.random() - 0.5) * 10;
+                const newScore = Math.max(0, Math.min(100, currentConsciousnessData.consciousnessScore + variation));
+                
+                const updatedData = {
+                    ...currentConsciousnessData,
+                    consciousnessScore: Math.round(newScore)
+                };
+                
+                updateDashboard(updatedData);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
